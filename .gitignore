@@ -174,3 +174,4 @@ cython_debug/
 *.zip
 *.csv
 data/*
+finished/*

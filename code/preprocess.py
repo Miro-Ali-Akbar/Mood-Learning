@@ -12,6 +12,8 @@ def discard_unwanted_columns(df, bad_columns):
     kept_cols = [col for col in df.columns if col not in bad_columns]
     cleaned_df = df[kept_cols]
     cleaned_df = cleaned_df.replace(0, np.nan)
+    # TODO: Change date to other value so its useful
+    cleaned_df = cleaned_df.drop(columns=["DATE (YYYY-MM-DD)"])
     # Be in root when running python
     cleaned_df.to_csv("data/data.csv", index=False)
 
