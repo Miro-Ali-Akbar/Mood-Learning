@@ -19,6 +19,7 @@ preprocess: export.emoodsw folders
 correlation_matrix: preprocess folders
 	@echo "Running correlation matrix calculation"
 	@python code/correlation_matrix.py
+
 clean:
 	@echo "Cleaning"
 	@rm -v data/ -rf 
