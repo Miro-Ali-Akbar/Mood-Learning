@@ -9,7 +9,11 @@ preprocess: export.emoodsw data
 	@cp export.emoodsw export.zip
 	@unzip export.zip -d data/
 	@rm export.zip
+	@python code/preprocess.py
+	@mv data/data.csv .
+	@rm data/*
+	@mv data.csv data/
 
-clear:
+clean:
 	@rm -v data/ -rf 
-	@rm export.zip
+	@rm export.zip -rf

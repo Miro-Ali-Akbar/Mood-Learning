@@ -9,3 +9,10 @@ unzip
 Python
 scikitlearn
 ```
+* Python deps
+- panda
+- 
+
+# Start
+* Place the export.emoodsw file in root of project
+* Run ```Make preprocess```
