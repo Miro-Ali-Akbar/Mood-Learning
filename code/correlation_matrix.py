@@ -1,12 +1,15 @@
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
-df = pd.read_csv("data/data.csv")
-corr_m = df.corr()
-cmap = sns.diverging_palette(230, 0, as_cmap=True)
-# Draw the heatmap with the mask and correct aspect ratio
-fig, ax = plt.subplots(figsize=(15,10))  
-sns.heatmap(corr_m, cmap=cmap, center=0, annot=True,annot_kws= {"size":10},
-            square=True, linewidths=.5, fmt=".2f", cbar_kws={"shrink": .5}, ax=ax)
-fig.savefig("finished/Corrfull.png", dpi=350, bbox_inches='tight')
+from style import heatmap, surface
+
+df = pd.read_csv("data/data.csv", index_col="DATE")
+df.columns = [col.title() for col in df.columns]
+
+fig, ax = plt.subplots(figsize=(12, 10), facecolor=surface)
+corr = df.corr()
+np.fill_diagonal(corr.values, np.nan)
+heatmap(ax, corr, "Same-day correlation")
+fig.colorbar(ax.images[0], ax=ax, shrink=0.5, label="Correlation (red = rise together)")
+fig.savefig("finished/correlation_matrix.png", dpi=150, bbox_inches="tight", facecolor=surface)

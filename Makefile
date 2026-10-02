@@ -1,27 +1,31 @@
+PYTHON = .venv/bin/python
+FIGURES = forecast lagged_correlation long_term correlation_matrix
 
-all: preprocess
+all: $(FIGURES)
 
-folders:
-	mkdir data
-	mkdir finished
+.venv: requirements.txt
+	python3 -m venv .venv
+	$(PYTHON) -m pip install -r requirements.txt
+	@touch .venv
 
-preprocess: export.emoodsw folders
-	@echo "Uncompressing data"
-	@cp export.emoodsw export.zip
-	@unzip export.zip -d data/
-	@rm export.zip
-	@echo "Cleaning columns"
-	@python code/preprocess.py
-	@mv data/data.csv .
-	@rm data/*
-	@mv data.csv data/
+data/data.csv: export.emoodsw code/preprocess.py | .venv
+	@echo "Unpacking and cleaning data"
+	@rm -rf data
+	@mkdir -p data/raw
+	@unzip -q export.emoodsw -d data/raw
+	@$(PYTHON) code/preprocess.py
+	@rm -r data/raw
 
-correlation_matrix: preprocess folders
-	@echo "Running correlation matrix calculation"
-	@python code/correlation_matrix.py
+finished/%.png: code/%.py code/style.py data/data.csv | .venv
+	@echo "Making $@"
+	@mkdir -p finished
+	@$(PYTHON) code/$*.py
+
+preprocess: data/data.csv
+
+$(FIGURES): %: finished/%.png
 
 clean:
-	@echo "Cleaning"
-	@rm -v data/ -rf 
-	@rm -v finished/ -rf
-	@rm export.zip -rf
+	rm -rf data finished
+
+.PHONY: all preprocess clean $(FIGURES)
